@@ -1,17 +1,13 @@
 async function send(endpoint, method, body) {
-  const token = localStorage.getItem("token");
-  if (token) {
-    const response = await fetch(`http://localhost:3000/api${endpoint}`, {
-      method,
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        // Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(body),
-    });
-    return response;
-  }
+  const response = await fetch(`http://localhost:3000/api${endpoint}`, {
+    method,
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+  return response;
 }
 
 export const api = {
