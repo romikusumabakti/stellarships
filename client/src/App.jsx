@@ -1,35 +1,51 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import { Link, Outlet } from "react-router-dom";
+import { api } from "./utils.js";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState();
 
-  return (
+  useEffect(() => {
+    api.get("/auth/me").then(async (response) => {
+      if (response.ok) {
+        const user = await response.json();
+        setUser(user);
+      }
+      setLoading(false);
+    });
+  }, []);
+
+  return loading ? (
+    <div>Memuat...</div>
+  ) : (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <header>
+        <Link to="/">
+          <div>Stellarships</div>
+        </Link>
+        {user ? (
+          <div>
+            <div>{user.name}</div>
+            <button
+              onClick={async () => {
+                const response = await api.post("/auth/logout");
+                if (response.ok) {
+                  setUser();
+                }
+              }}
+            >
+              Logout
+            </button>
+          </div>
+        ) : (
+          <Link to="/login">
+            <button>Login</button>
+          </Link>
+        )}
+      </header>
+      <Outlet context={[user, setUser]} />
+      <footer>&copy; 2023 Stellarships</footer>
     </>
-  )
+  );
 }
-
-export default App
