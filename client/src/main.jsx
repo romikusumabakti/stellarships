@@ -4,20 +4,39 @@ import App from "./App.jsx";
 import "./index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Login from "./pages/Login.jsx";
+import Planets from "./pages/planets/Index.jsx";
+import PlanetDetail from "./pages/planets/Detail.jsx";
+import PlanetEdit from "./pages/planets/Edit.jsx";
 import Home from "./pages/Home.jsx";
 
 const router = createBrowserRouter([
   {
-    path: "/",
     element: <App />,
     children: [
       {
-        path: "/login",
+        index: true,
+        element: <Home />,
+      },
+      {
+        path: "login",
         element: <Login />,
       },
       {
-        path: "/",
-        element: <Home />,
+        path: "planets",
+        children: [
+          {
+            index: true,
+            element: <Planets />,
+          },
+          {
+            path: ":id",
+            element: <PlanetDetail />,
+          },
+          {
+            path: ":id/edit",
+            element: <PlanetEdit />,
+          },
+        ],
       },
     ],
   },
